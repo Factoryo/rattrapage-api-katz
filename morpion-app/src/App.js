@@ -5,12 +5,19 @@ import React, { useState } from 'react';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isSignUpView, setIsSignUpView] = useState(false);  // Nouvel état pour basculer entre Login et SignUp
+  const [isSignUpView, setIsSignUpView] = useState(false);
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+  }
 
   return (
     <div>
       {isAuthenticated ? (
-        "Bienvenue!"
+        <>
+        Bienvenue!
+        <button onClick={handleLogout}>Déconnexion</button>
+        </>
       ) : isSignUpView ? (
         <>
           <SignUp setIsAuth={setIsAuthenticated} />
