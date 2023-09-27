@@ -6,16 +6,41 @@ function Login({ setIsAuth }) {
 
   const login = () => {
     fetch("http://localhost:3001/login", {
-      username,
-      password,
-    }).then((res) => {
-      setIsAuth(true);
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+    })
+    .then((response) => {
+      if (response.status === 401) {
+        throw new Error("Unauthorized: Invalid username or password.");
+      } else if (!response.ok) {
+        throw new Error("Login request failed. Please try again.");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Received response:", data);
+
+      if(data.token) {
+        setIsAuth(true);
+      } else {
+        alert(data.message || "Login failed!");
+      }
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      alert(error.message);
     });
   };
+
   return (
     <div className="login">
       <label> Login</label>
-
       <input
         placeholder="Username"
         onChange={(event) => {

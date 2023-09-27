@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import User from "./modeles/user.js";import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({ path: '../db.env' });
 
 const app = express();
 
@@ -32,7 +32,7 @@ app.post("/signup", async (req, res) => {
     });
     await user.save();
 
-    const token = jwt.sign({ userId: user._id }, 'process.env.JWT_SECRET');
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
 
     res.json({ token, userId: user._id, firstName, lastName, username });
   } catch (error) {
@@ -41,15 +41,22 @@ app.post("/signup", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
+  console.log("Received login request:", req.body);
+
   try {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
-    if (!user) return res.json({ message: "User not found" });
+
+    if (!user) {
+      console.log("User not found for:", username);
+      return res.status(401).json({ message: "User not found" });
+    }
 
     const passwordMatch = await bcrypt.compare(password, user.hashedPassword);
 
     if (passwordMatch) {
-      const token = jwt.sign({ userId: user._id }, 'process.env.JWT_SECRET');
+      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+      console.log("Sending response:", token, user.firstName, user.lastName, username, user._id); // Log pour le débogage
       res.json({
         token,
         firstName: user.firstName,
@@ -58,10 +65,13 @@ app.post("/login", async (req, res) => {
         userId: user._id,
       });
     } else {
-      res.json({ message: "Invalid password" });
+      console.log("Invalid password for:", username);
+      res.status(401).json({ message: "Invalid password" });
     }
+
   } catch (error) {
-    res.json(error);
+    console.error('Error:', error);
+    res.status(500).json(error);
   }
 });
 
