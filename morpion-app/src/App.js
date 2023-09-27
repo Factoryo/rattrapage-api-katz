@@ -1,21 +1,24 @@
 import './App.css';
 import Login from './composants/Login';
 import SignUp from './composants/SignUp';
+import JoinJeu from './composants/JoinJeu';
 import React, { useState } from 'react';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSignUpView, setIsSignUpView] = useState(false);
+  const [channel, setChannel] = useState(null);
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    setChannel(null);
   }
 
   return (
     <div>
       {isAuthenticated ? (
         <>
-        Bienvenue!
+        <JoinJeu channel={channel} setChannel={setChannel} />
         <button onClick={handleLogout}>Déconnexion</button>
         </>
       ) : isSignUpView ? (
