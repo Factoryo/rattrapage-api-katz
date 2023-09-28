@@ -20,7 +20,7 @@ function SignUp({ setIsAuth }) {
     })
     .then((data) => {
       if(data.token) {
-        setIsAuth(true);
+        setIsAuth(data.userId);
       } else {
         alert(data.message || "Sign up failed!");
       }
@@ -28,7 +28,8 @@ function SignUp({ setIsAuth }) {
     .catch((error) => {
       console.error('Error:', error);
     });
-};
+  };
+
   return (
     <div className="signUp">
       <label> Sign Up</label>

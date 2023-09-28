@@ -8,27 +8,34 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isSignUpView, setIsSignUpView] = useState(false);
   const [channel, setChannel] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     setChannel(null);
+    setUserId(null);
+  }
+
+  const handleAuthentication = (id) => {
+    setIsAuthenticated(true);
+    setUserId(id);
   }
 
   return (
     <div>
       {isAuthenticated ? (
         <>
-        <JoinJeu channel={channel} setChannel={setChannel} />
+        <JoinJeu channel={channel} setChannel={setChannel} userId={userId} />
         <button onClick={handleLogout}>Déconnexion</button>
         </>
       ) : isSignUpView ? (
         <>
-          <SignUp setIsAuth={setIsAuthenticated} />
+          <SignUp setIsAuth={handleAuthentication} />
           <button onClick={() => setIsSignUpView(false)}>Aller à la connexion</button>
         </>
       ) : (
         <>
-          <Login setIsAuth={setIsAuthenticated} />
+          <Login setIsAuth={handleAuthentication} />
           <button onClick={() => setIsSignUpView(true)}>Créer un compte</button>
         </>
       )}

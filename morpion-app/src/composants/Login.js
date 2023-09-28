@@ -27,7 +27,7 @@ function Login({ setIsAuth }) {
       console.log("Received response:", data);
 
       if(data.token) {
-        setIsAuth(true);
+        setIsAuth(data.userId);
       } else {
         alert(data.message || "Login failed!");
       }

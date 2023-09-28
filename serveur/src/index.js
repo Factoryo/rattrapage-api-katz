@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import User from "./modeles/user.js";import dotenv from 'dotenv';
+import GameSession from "./modeles/gameSession.js";
 
 dotenv.config({ path: '../db.env' });
 
@@ -72,6 +73,45 @@ app.post("/login", async (req, res) => {
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json(error);
+  }
+});
+
+app.post("/createGameSession", async (req, res) => {
+  try {
+    const newSession = new GameSession();
+    await newSession.save();
+    res.json(newSession);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to create game session" });
+  }
+});
+
+app.post("/joinGameSession", async (req, res) => {
+  const { sessionId, userId } = req.body;
+  try {
+    const session = await GameSession.findById(sessionId);
+    if (!session) {
+      return res.status(404).json({ error: "Game session not found" });
+    }
+    if (session.players.length < 2) {
+      session.players.push(userId);
+      await session.save();
+    }
+    res.json(session);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to join game session" });
+  }
+});
+
+app.get("/gameSessionStatus/:sessionId", async (req, res) => {
+  try {
+    const session = await GameSession.findById(req.params.sessionId).populate('players');
+    if (!session) {
+      return res.status(404).json({ error: "Game session not found" });
+    }
+    res.json(session);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to get game session status" });
   }
 });
 
