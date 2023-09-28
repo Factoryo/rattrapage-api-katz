@@ -13,6 +13,10 @@ function Jeu({ channel, setChannel }) {
           throw new Error("Failed to get game session status: " + response.statusText);
         }
         const data = await response.json();
+
+        // Ajout du log ici pour afficher la réponse du serveur
+        console.log("Réponse du serveur:", data);
+
         if (data.players && data.players.length === 2) {
           setPlayersJoined(true);
         }

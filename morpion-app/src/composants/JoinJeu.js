@@ -3,28 +3,30 @@ import Jeu from "./Jeu";
 
 function JoinJeu({ userId }) {
   const [channel, setChannel] = useState(null);
-  const [rivalUsername, setRivalUsername] = useState("");
   const BASE_URL = "http://localhost:3001";
 
-  const createChannel = async () => {
+  const joinOrCreateChannel = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/createGameSession`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (!response.ok) { 
-        throw new Error("Failed to create game session: " + response.statusText);
+      let response = await fetch(`${BASE_URL}/getAvailableGameSession`);
+      if (!response.ok) {
+        throw new Error("Failed to get available game session: " + response.statusText);
       }
-      const data = await response.json();
-      const newChannel = {
-        id: data._id,
-        name: rivalUsername,
-      };
-      setChannel(newChannel);
+      let data = await response.json();
+      if (!data || !data._id) {
+        response = await fetch(`${BASE_URL}/createGameSession`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to create game session: " + response.statusText);
+        }
+        data = await response.json();
+      }
+      setChannel({ id: data._id });
     } catch (error) {
-      console.error("Failed to create game session:", error);
+      console.error("Failed to join or create game session:", error);
     }
   };
 
@@ -42,7 +44,7 @@ function JoinJeu({ userId }) {
               userId: userId,
             }),
           });
-          if (!response.ok) { 
+          if (!response.ok) {
             throw new Error("Failed to join game session: " + response.statusText);
           }
         } catch (error) {
@@ -56,19 +58,10 @@ function JoinJeu({ userId }) {
   return (
     <>
       {channel ? (
-        <div>
-          <Jeu channel={channel} setChannel={setChannel} />
-        </div>
+        <Jeu channel={channel} setChannel={setChannel} />
       ) : (
         <div className="joinGame">
-          <h4>Création de session de jeu</h4>
-          <input
-            placeholder="Pseudonyme du rival..."
-            onChange={(event) => {
-              setRivalUsername(event.target.value);
-            }}
-          />
-          <button onClick={createChannel}>Joindre la session/créer une nouvelle session</button>
+          <button onClick={joinOrCreateChannel}>Rejoindre ou créer une session</button>
         </div>
       )}
     </>
