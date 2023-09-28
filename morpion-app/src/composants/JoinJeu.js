@@ -1,40 +1,48 @@
 import React, { useState, useEffect } from "react";
 import Jeu from "./Jeu";
 
-function JoinJeu({ userId }) {
+function JoindreJeu({ userId }) {
   const [channel, setChannel] = useState(null);
   const BASE_URL = "http://localhost:3001";
-
-  const joinOrCreateChannel = async () => {
+  
+  /* Pour récupérer une session de jeu ou en créer une */
+  const tenterRejoindreOuCreerSession = async () => {
     try {
-      let response = await fetch(`${BASE_URL}/getAvailableGameSession`);
+      let response = await fetch(`${BASE_URL}/getSessionJeuDisponible`);
+
       if (!response.ok) {
-        throw new Error("Failed to get available game session: " + response.statusText);
+        throw new Error("Echec a recuperer session dispo : " + response.statusText);
       }
-      let data = await response.json();
-      if (!data || !data._id) {
-        response = await fetch(`${BASE_URL}/createGameSession`, {
+
+      let sessionData = await response.json();
+
+      if (!sessionData || !sessionData._id) {
+        response = await fetch(`${BASE_URL}/CreaSessionJeu`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
         });
+
         if (!response.ok) {
-          throw new Error("Failed to create game session: " + response.statusText);
+          throw new Error("Echec lors de la crea de session : " + response.statusText);
         }
-        data = await response.json();
+
+        sessionData = await response.json();
       }
-      setChannel({ id: data._id });
+
+      setChannel({ id: sessionData._id });
+
     } catch (error) {
-      console.error("Failed to join or create game session:", error);
+      console.error("Echec a joindre et a créer une session : ", error);
     }
   };
 
   useEffect(() => {
     if (channel) {
-      const joinGame = async () => {
+      const rejoindreSessionJeu = async () => {
         try {
-          const response = await fetch(`${BASE_URL}/joinGameSession`, {
+          const response = await fetch(`${BASE_URL}/joinSessionJeu`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -44,28 +52,33 @@ function JoinJeu({ userId }) {
               userId: userId,
             }),
           });
+
           if (!response.ok) {
-            throw new Error("Failed to join game session: " + response.statusText);
+            throw new Error("Echec a joindre la session : " + response.statusText);
           }
+
         } catch (error) {
-          console.error("Failed to join game session:", error);
+          console.error("Echec a joindre la session : ", error);
         }
       };
-      joinGame();
+      
+      rejoindreSessionJeu();
     }
-  }, [channel, userId]);
+  }, [userId, channel]);
 
   return (
     <>
       {channel ? (
         <Jeu channel={channel} setChannel={setChannel} />
       ) : (
-        <div className="joinGame">
-          <button onClick={joinOrCreateChannel}>Rejoindre ou créer une session</button>
+        <div className="JoinJeu">
+          <button onClick={tenterRejoindreOuCreerSession}>
+            Rejoindre ou créer une session
+          </button>
         </div>
       )}
     </>
   );
 }
 
-export default JoinJeu;
+export default JoindreJeu;

@@ -8,25 +8,28 @@ function Jeu({ channel, setChannel }) {
   useEffect(() => {
     const checkPlayersJoined = async () => {
       try {
-        const response = await fetch(`${BASE_URL}/gameSessionStatus/${channel.id}`);
+        const response = await fetch
+        (`${BASE_URL}/StatutSessionJeu/${channel.id}`);
         if (!response.ok) { 
-          throw new Error("Failed to get game session status: " + response.statusText);
+          throw new Error
+          ("Echec a obtenir le statut de la session: " + response.statusText);
         }
         const data = await response.json();
 
-        // Ajout du log ici pour afficher la réponse du serveur
         console.log("Réponse du serveur:", data);
 
         if (data.players && data.players.length === 2) {
           setPlayersJoined(true);
         }
       } catch (error) {
-        console.error("Failed to get game session status:", error);
+        console.error("Echec a obtenir le statut de la session: ", 
+        error);
       }
     };
 
     const interval = setInterval(checkPlayersJoined, 2000);
-    return () => clearInterval(interval);
+    return () => clearInterval
+    (interval);
   }, [channel]);
 
   if (!playersJoined) {
@@ -34,7 +37,7 @@ function Jeu({ channel, setChannel }) {
   }
 
   return (
-    <div className="gameContainer">
+    <div className="BlocJeu">
       <h2>Jeu</h2>
       <button
         onClick={async () => {
@@ -43,8 +46,10 @@ function Jeu({ channel, setChannel }) {
       >
         Quitter Le jeu
       </button>
-      {result.state === "won" && <div>{result.winner} Gagné La Manche</div>}
-      {result.state === "tie" && <div>Jeu Égal</div>}
+      {result.state === "won" && <div>
+        {result.winner} Gagné La Manche</div>}
+      {result.state === "tie" && 
+      <div>Jeu Égal</div>}
     </div>
   );
 }

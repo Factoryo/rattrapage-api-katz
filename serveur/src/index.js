@@ -4,8 +4,11 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import User from "./modeles/user.js";
-import GameSession from "./modeles/gameSession.js";
+import SessionJeu from "./modeles/SessionJeu.js";
 import dotenv from 'dotenv';
+
+/*dotenv bcrypt et cors m'aident pour l'authentification*/
+/*mongoose est installé car j'utilise mongodb*/
 
 dotenv.config({ path: '../db.env' });
 
@@ -34,7 +37,7 @@ app.post("/login", async (req, res) => {
   const { username, password } = req.body;
   const user = await User.findOne({ username });
   if (!user) {
-    return res.status(401).json({ message: "User not found" });
+    return res.status(401).json({ message: "Utilisateur introuvable" });
   }
   const passwordMatch = await bcrypt.compare(password, user.hashedPassword);
   if (passwordMatch) {
@@ -47,17 +50,17 @@ app.post("/login", async (req, res) => {
       userId: user._id,
     });
   } else {
-    res.status(401).json({ message: "Invalid password" });
+    res.status(401).json({ message: "Mot de passe non valide" });
   }
 });
 
-app.post("/createGameSession", async (req, res) => {
-  const newSession = new GameSession();
-  await newSession.save();
-  res.json(newSession);
+app.post("/CreaSessionJeu", async (req, res) => {
+  const nvSession = new SessionJeu();
+  await nvSession.save();
+  res.json(nvSession);
 });
 
-app.post("/joinGameSession", async (req, res) => {
+app.post("/joinSessionJeu", async (req, res) => {
   const { sessionId, userId } = req.body;
   const session = await GameSession.findById(sessionId);
   if (session.players.length < 2 && !session.players.includes(userId)) {
@@ -67,34 +70,34 @@ app.post("/joinGameSession", async (req, res) => {
   res.json(session);
 });
 
-app.get("/getAvailableGameSession", async (req, res) => {
-  const availableSession = await GameSession.findOne({
+app.get("/getSessionJeuDispo", async (req, res) => {
+  const availableSession = await SessionJeu.findOne({
     players: { $size: 1 }
   });
-  if (availableSession) {
-    res.json(availableSession);
+  if (SessionDispo) {
+    res.json(SessionDispo);
   } else {
-    res.status(404).json({ message: "No available game session found" });
+    res.status(404).json({ message: "Pas de session disponible trouvée" });
   }
 });
 
-app.get("/gameSessionStatus/:sessionId", async (req, res) => {
-  const session = await GameSession.findById(req.params.sessionId).populate('players');
+app.get("/StatutSessionJeu/:sessionId", async (req, res) => {
+  const session = await Sessionjeu.findById(req.params.sessionId).populate('players');
   if (!session) {
-    return res.status(404).json({ error: "Game session not found" });
+    return res.status(404).json({ error: "Pas de session trouvée" });
   }
   res.json(session);
 });
 
 mongoose.connect('mongodb://localhost:27017/morpion-app', { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => {
-    console.log('Connected to MongoDB');
+    console.log('Connnecté a MongoDB');
   })
   .catch((error) => {
-    console.error('Error connecting to MongoDB', error);
+    console.error('N arrive pas a se connecter a mongodb', error);
 });
 
 
 app.listen(3001, () => {
-  console.log("Server is running on port 3001");
+  console.log("Serveur sur port 3001");
 });
