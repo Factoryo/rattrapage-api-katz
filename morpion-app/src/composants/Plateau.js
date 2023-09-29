@@ -12,8 +12,8 @@ function Plateau({ resultat, setResultat }) {
   const { client } = useChatContext();
 
   useEffect(() => {
-    verifierEgal();
-    verifierVictoire();
+    verifEgal();
+    verifVictoire();
   }, [plateau]);
 
   const choisirCarre = async (carre) => {
@@ -36,7 +36,7 @@ function Plateau({ resultat, setResultat }) {
     }
   };
 
-  const verifierVictoire = () => {
+  const verifVictoire = () => {
     Patterns.forEach((patternActu) => {
       const premierJoueur = plateau[patternActu[0]];
       if (premierJoueur === "") return;
@@ -53,7 +53,7 @@ function Plateau({ resultat, setResultat }) {
     });
   };
 
-  const verifierEgal = () => {
+  const verifEgal = () => {
     let rempli = true;
     plateau.forEach((carre) => {
       if (carre === "") {
@@ -67,7 +67,7 @@ function Plateau({ resultat, setResultat }) {
   };
 
   canal.on((event) => {
-    if (event.type === "mouvement-jeu" && event.user.id !== client.userID) {
+    if (event.type === "mouv-jeu" && event.user.id !== client.userID) {
       const joueurActu = event.data.joueur === "X" ? "O" : "X";
       setJoueur(joueurActu);
       setTour(joueurActu);
