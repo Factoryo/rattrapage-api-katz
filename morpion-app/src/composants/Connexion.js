@@ -45,4 +45,4 @@ function Connexion({ setEstAuthentifie }) {
 
 export default Connexion;
 
-/**Connexion */
+/**Connexion, problemes avec le frontend que je n'ai pas réussi a résoudre, en rapport avec des problemes de hook */

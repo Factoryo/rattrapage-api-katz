@@ -5,57 +5,57 @@ import Inscription from "./composants/Inscription";
 import { StreamChat } from "stream-chat";
 import { Chat } from "stream-chat-react";
 import Cookies from "universal-cookie";
-import RejoindrePartie from "./composants/RejoindrePartie";
+import RejoindreSalle from "./composants/RejoindreSalle";
 
 function App() {
-  const cle_api = "mrp9h9wk79gy";
+  const cleApi = "mrp9h9wk79gy";
   const cookies = new Cookies();
-  const jeton = cookies.get("jeton");
-  const client = StreamChat.getInstance(cle_api);
-  const [estAuthentifie, setEstAuthentifie] = useState(false);
+  const token = cookies.get("token");
+  const clientChat = StreamChat.getInstance(cleApi);
+  const [estConnecte, definirEstConnecte] = useState(false);
 
-  const seDeconnecter = () => {
-    cookies.remove("jeton");
-    cookies.remove("userId");
+  const deconnecter = () => {
+    cookies.remove("token");
+    cookies.remove("idUtilisateur");
     cookies.remove("prenom");
     cookies.remove("nom");
     cookies.remove("motDePasseHash");
     cookies.remove("nomCanal");
     cookies.remove("nomUtilisateur");
-    client.disconnectUser();
-    setEstAuthentifie(false);
+    clientChat.disconnectUser();
+    definirEstConnecte(false);
   };
 
   useEffect(() => {
-    if (jeton) {
-      client
-        .connectUser(
+    if (token) {
+      clientChat
+        .connecterUtilisateur(
           {
-            id: cookies.get("userId"),
+            id: cookies.get("idUtilisateur"),
             name: cookies.get("nomUtilisateur"),
             firstName: cookies.get("prenom"),
             lastName: cookies.get("nom"),
-            hashedPassword: cookies.get("motDePasseHash"),
+            motDePasseHash: cookies.get("motDePasseHash"),
           },
-          jeton
+          token
         )
-        .then((utilisateur) => {
-          setEstAuthentifie(true);
+        .then(() => {
+          definirEstConnecte(true);
         });
     }
-  }, [jeton, client, cookies]);
+  }, [token, clientChat, cookies]);
 
   return (
     <div className="App">
-      {estAuthentifie ? (
-        <Chat client={client}>
-          <RejoindrePartie />
-          <button onClick={seDeconnecter}> Se déconnecter</button>
+      {estConnecte ? (
+        <Chat client={clientChat}>
+          <RejoindreSalle />
+          <button onClick={deconnecter}> Se déconnecter</button>
         </Chat>
       ) : (
         <>
-          <Inscription setEstAuthentifie={setEstAuthentifie} />
-          <Connexion setEstAuthentifie={setEstAuthentifie} />
+          <Inscription definirEstConnecte={definirEstConnecte} />
+          <Connexion definirEstConnecte={definirEstConnecte} />
         </>
       )}
     </div>

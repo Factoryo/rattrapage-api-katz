@@ -54,4 +54,4 @@ function Inscription({ setEstAuthentifie }) {
 
 export default Inscription;
 
-/**Inscription */
+/**Fonction d'inscription, problemes avec le frontend que je n'ai pas réussi a résoudre, en rapport avec des problemes de hook */
