@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Axios from "axios";
 import Cookies from "universal-cookie";
 
-function Inscription({ setEstAuthentifie }) {
+function Inscription({ setEstAuth }) {
   const cookies = new Cookies();
   const [user, setUser] = useState(null);
 
@@ -16,7 +16,7 @@ function Inscription({ setEstAuthentifie }) {
       cookies.set("prenom", prenom);
       cookies.set("nom", nom);
       cookies.set("motDePasseHash", motDePasseHash);
-      setEstAuthentifie(true);
+      setEstAuth(true);
     });
   };
   return (

@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { useChatContext, Channel } from "stream-chat-react";
 import Jeu from "./Jeu";
-import InputPersonnalise from "./InputPersonnalise";
+import InputPerso from "./InputPerso";
 
 function RejoindreJeu() {
-  const [pseudoAdversaire, setPseudoAdversaire] = useState("");
+  const [pseudoConcu, setPseudoConcu] = useState("");
   const { client } = useChatContext();
   const [canal, setCanal] = useState(null);
   const creerCanal = async () => {
-    const reponse = await client.queryUsers({ name: { $eq: pseudoAdversaire } });
+    const reponse = await client.queryUsers({ name: { $eq: pseudoConcu } });
 
     if (reponse.users.length === 0) {
       alert("Utilisateur introuvable");
@@ -26,7 +26,7 @@ function RejoindreJeu() {
   return (
     <>
       {canal ? (
-        <Channel channel={canal} Input={InputPersonnalise}>
+        <Channel channel={canal} Input={InputPerso}>
           <Jeu canal={canal} setCanal={setCanal} />
         </Channel>
       ) : (
@@ -35,7 +35,7 @@ function RejoindreJeu() {
           <input
             placeholder="Pseudo de l'adversaire..."
             onChange={(event) => {
-              setPseudoAdversaire(event.target.value);
+              setPseudoConcu(event.target.value);
             }}
           />
           <button onClick={creerCanal}> Rejoindre/Démarrer Jeu</button>

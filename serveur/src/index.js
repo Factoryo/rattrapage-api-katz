@@ -14,11 +14,11 @@ const clientServeur = StreamChat.getInstance(cle_api, secret_api);
 
 app.post("/inscription", async (req, res) => {
   try {
-    const { prenom, nom, nomUtilisateur, motDePasse } = req.body;
+    const { prenom, nom, pseudo, motDePasse } = req.body;
     const userId = uuidv4();
     const motDePasseHash = await bcrypt.hash(motDePasse, 10);
     const jeton = clientServeur.createToken(userId);
-    res.json({ jeton, userId, prenom, nom, nomUtilisateur, motDePasseHash });
+    res.json({ jeton, userId, prenom, nom, pseudo, motDePasseHash });
   } catch (erreur) {
     res.json(erreur);
   }
@@ -26,23 +26,23 @@ app.post("/inscription", async (req, res) => {
 
 app.post("/connexion", async (req, res) => {
   try {
-    const { nomUtilisateur, motDePasse } = req.body;
-    const { utilisateurs } = await clientServeur.queryUsers({ name: nomUtilisateur });
-    if (utilisateurs.length === 0) return res.json({ message: "Utilisateur non trouvé" });
+    const { pseudo, motDePasse } = req.body;
+    const { users } = await clientServeur.queryUsers({ name: pseudo });
+    if (users.length === 0) return res.json({ message: "Utilisateur introuvable" });
 
-    const jeton = clientServeur.createToken(utilisateurs[0].id);
-    const correspondanceMotDePasse = await bcrypt.compare(
+    const jeton = clientServeur.createToken(users[0].id);
+    const correspoMotDePasse = await bcrypt.compare(
       motDePasse,
       utilisateurs[0].motDePasseHash
     );
 
-    if (correspondanceMotDePasse) {
+    if (correspoMotDePasse) {
       res.json({
         jeton,
-        prenom: utilisateurs[0].prenom,
-        nom: utilisateurs[0].nom,
-        nomUtilisateur,
-        userId: utilisateurs[0].id,
+        prenom: users[0].prenom,
+        nom: users[0].nom,
+        pseudo,
+        userId: users[0].id,
       });
     }
   } catch (erreur) {

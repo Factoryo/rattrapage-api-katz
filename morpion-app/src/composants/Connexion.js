@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import Axios from "axios";
 import Cookies from "universal-cookie";
 
-function Connexion({ setEstAuthentifie }) {
+function Connexion({ setEstAuth }) {
   const [pseudo, setPseudo] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
 
   const cookies = new Cookies();
-  const seConnecter = () => {
+  const seCo = () => {
     Axios.post("http://localhost:3001/login", {
       pseudo,
       motDePasse,
@@ -18,11 +18,11 @@ function Connexion({ setEstAuthentifie }) {
       cookies.set("pseudo", pseudo);
       cookies.set("prenom", prenom);
       cookies.set("nom", nom);
-      setEstAuthentifie(true);
+      setEstAuth(true);
     });
   };
   return (
-    <div className="connexion">
+    <div className="co">
       <label> Connexion</label>
 
       <input
@@ -38,7 +38,7 @@ function Connexion({ setEstAuthentifie }) {
           setMotDePasse(event.target.value);
         }}
       />
-      <button onClick={seConnecter}> Se connecter</button>
+      <button onClick={seCo}> Se connecter</button>
     </div>
   );
 }

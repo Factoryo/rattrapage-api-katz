@@ -12,27 +12,27 @@ function App() {
   const cookies = new Cookies();
   const token = cookies.get("token");
   const clientChat = StreamChat.getInstance(cleApi);
-  const [estConnecte, definirEstConnecte] = useState(false);
+  const [estConnecte, definirEstCo] = useState(false);
 
-  const deconnecter = () => {
+  const deco = () => {
     cookies.remove("token");
-    cookies.remove("idUtilisateur");
+    cookies.remove("idUser");
     cookies.remove("prenom");
     cookies.remove("nom");
     cookies.remove("motDePasseHash");
     cookies.remove("nomCanal");
-    cookies.remove("nomUtilisateur");
+    cookies.remove("pseudo");
     clientChat.disconnectUser();
-    definirEstConnecte(false);
+    definirEstCo(false);
   };
 
   useEffect(() => {
     if (token) {
       clientChat
-        .connecterUtilisateur(
+        .connecterUser(
           {
-            id: cookies.get("idUtilisateur"),
-            name: cookies.get("nomUtilisateur"),
+            id: cookies.get("idUser"),
+            name: cookies.get("pseudo"),
             firstName: cookies.get("prenom"),
             lastName: cookies.get("nom"),
             motDePasseHash: cookies.get("motDePasseHash"),
@@ -40,7 +40,7 @@ function App() {
           token
         )
         .then(() => {
-          definirEstConnecte(true);
+          definirEstCo(true);
         });
     }
   }, [token, clientChat, cookies]);
@@ -50,12 +50,12 @@ function App() {
       {estConnecte ? (
         <Chat client={clientChat}>
           <RejoindreSalle />
-          <button onClick={deconnecter}> Se déconnecter</button>
+          <button onClick={deco}> Se déconnecter</button>
         </Chat>
       ) : (
         <>
-          <Inscription definirEstConnecte={definirEstConnecte} />
-          <Connexion definirEstConnecte={definirEstConnecte} />
+          <Inscription definirEstCo={definirEstCo} />
+          <Connexion definirEstCo={definirEstCo} />
         </>
       )}
     </div>
