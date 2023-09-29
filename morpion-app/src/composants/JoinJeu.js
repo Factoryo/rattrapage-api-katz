@@ -3,7 +3,7 @@ import { useChatContext, Channel } from "stream-chat-react";
 import Jeu from "./Jeu";
 import InputPerso from "./InputPerso";
 
-function RejoindreJeu() {
+function JoinJeu() {
   const [pseudoConcu, setPseudoConcu] = useState("");
   const { client } = useChatContext();
   const [canal, setCanal] = useState(null);
@@ -30,7 +30,7 @@ function RejoindreJeu() {
           <Jeu canal={canal} setCanal={setCanal} />
         </Channel>
       ) : (
-        <div className="rejoindreJeu">
+        <div className="joinJeu">
           <h4>Créer Jeu</h4>
           <input
             placeholder="Pseudo de l'adversaire..."
@@ -45,6 +45,6 @@ function RejoindreJeu() {
   );
 }
 
-export default RejoindreJeu;
+export default JoinJeu;
 
 /**Rejoindre la partie en cours */

@@ -2,29 +2,27 @@ import React, { useEffect, useState } from "react";
 import { useChannelStateContext, useChatContext } from "stream-chat-react";
 import Carre from "./Carre";
 import { Patterns } from "../PatternsGagnants";
-function Morpion({ resultat, setResultat }) {
-  const [morpion, setPlateau] = useState(["", "", "", "", "", "", "", "", ""]);
+function Morpion({ result, setResult }) {
+  const [morpion, setMorpion] = useState(["", "", "", "", "", "", "", "", ""]);
   const [joueur, setJoueur] = useState("X");
   const [tour, setTour] = useState("X");
 
-  const { canal } = useChannelStateContext();
+  const { channel } = useChannelStateContext();
   const { client } = useChatContext();
 
   useEffect(() => {
-    verifEgal();
-    verifVictoire();
+    checkSiEgal();
+    checkGagne();
   }, [morpion]);
-
-  const choixCarre = async (carre) => {
+  const chooseCarre = async (carre) => {
     if (tour === joueur && morpion[carre] === "") {
       setTour(joueur === "X" ? "O" : "X");
 
-      await canal.sendEvent({
-        type: "mouv-jeu",
+      await channel.sendEvent({
+        type: "game-move",
         data: { carre, joueur },
       });
-
-      setPlateau(
+      setMorpion(
         morpion.map((val, idx) => {
           if (idx === carre && val === "") {
             return joueur;
@@ -35,45 +33,45 @@ function Morpion({ resultat, setResultat }) {
     }
   };
 
-  const verifVictoire = () => {
-    Patterns.forEach((patternActu) => {
-      const premierJoueur = morpion[patternActu[0]];
-      if (premierJoueur === "") return;
+  const checkGagne = () => {
+    Patterns.forEach((currPattern) => {
+      const premierJoueur = morpion[currPattern[0]];
+      if (premierJoueur == "") return;
       let patternGagnantTrouve = true;
-      patternActu.forEach((idx) => {
-        if (morpion[idx] !== premierJoueur) {
+      currPattern.forEach((idx) => {
+        if (morpion[idx] != premierJoueur) {
           patternGagnantTrouve = false;
         }
       });
 
       if (patternGagnantTrouve) {
-        setResultat({ gagnant: morpion[patternActu[0]], etat: "gagne" });
+        setResult({ winner: morpion[currPattern[0]], state: "won" });
       }
     });
   };
 
-  const verifEgal = () => {
-    let rempli = true;
+  const checkSiEgal = () => {
+    let filled = true;
     morpion.forEach((carre) => {
-      if (carre === "") {
-        rempli = false;
+      if (carre == "") {
+        filled = false;
       }
     });
 
-    if (rempli) {
-      setResultat({ gagnant: "aucun", etat: "egalite" });
+    if (filled) {
+      setResult({ winner: "aucun", state: "egal" });
     }
   };
 
-  canal.on((event) => {
-    if (event.type === "mouv-jeu" && event.user.id !== client.userID) {
-      const joueurActu = event.data.joueur === "X" ? "O" : "X";
-      setJoueur(joueurActu);
-      setTour(joueurActu);
-      setPlateau(
+  channel.on((event) => {
+    if (event.type == "game-move" && event.user.id !== client.userID) {
+      const currentPlayer = event.data.player === "X" ? "O" : "X";
+      setJoueur(currentPlayer);
+      setTour(currentPlayer);
+      setMorpion(
         morpion.map((val, idx) => {
           if (idx === event.data.carre && val === "") {
-            return event.data.joueur;
+            return event.data.player;
           }
           return val;
         })
@@ -84,24 +82,67 @@ function Morpion({ resultat, setResultat }) {
   return (
     <div className="morpion">
       <div className="ligne">
-        <Carre val={morpion[0]} choisirCarre={() => choixCarre(0)} />
-        <Carre val={morpion[1]} choisirCarre={() => choixCarre(1)} />
-        <Carre val={morpion[2]} choisirCarre={() => choixCarre(2)} />
+        <Carre
+          val={morpion[0]}
+          chooseCarre={() => {
+            chooseCarre(0);
+          }}
+        />
+        <Carre
+          val={morpion[1]}
+          chooseSquare={() => {
+            chooseCarre(1);
+          }}
+        />
+        <Carre
+          val={morpion[2]}
+          chooseCarre={() => {
+            chooseCarre(2);
+          }}
+        />
       </div>
       <div className="ligne">
-        <Carre val={morpion[3]} choisirCarre={() => choixCarre(3)} />
-        <Carre val={morpion[4]} choisirCarre={() => choixCarre(4)} />
-        <Carre val={morpion[5]} choisirCarre={() => choixCarre(5)} />
+        <Carre
+          val={morpion[3]}
+          chooseCarre={() => {
+            chooseCarre(3);
+          }}
+        />
+        <Carre
+          val={morpion[4]}
+          chooseCarre={() => {
+            chooseCarre(4);
+          }}
+        />
+        <Carre
+          val={morpion[5]}
+          chooseCarre={() => {
+            chooseCarre(5);
+          }}
+        />
       </div>
       <div className="ligne">
-        <Carre val={morpion[6]} choisirCarre={() => choixCarre(6)} />
-        <Carre val={morpion[7]} choisirCarre={() => choixCarre(7)} />
-        <Carre val={morpion[8]} choisirCarre={() => choixCarre(8)} />
+        <Carre
+          val={morpion[6]}
+          chooseCarre={() => {
+            chooseCarre(6);
+          }}
+        />
+        <Carre
+          val={morpion[7]}
+          chooseCarre={() => {
+            chooseCarre(7);
+          }}
+        />
+        <Carre
+          val={morpion[8]}
+          chooseCarre={() => {
+            chooseCarre(8);
+          }}
+        />
       </div>
     </div>
   );
 }
 
 export default Morpion;
-
-/**Plateau du morpion */
