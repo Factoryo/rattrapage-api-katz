@@ -1,8 +1,8 @@
 import React from "react";
 
-function Carre({ choisirCarre, val }) {
+function Carre({ choixCarre, val }) {
   return (
-    <div className="carre" onClick={choisirCarre}>
+    <div className="carre" onClick={choixCarre}>
       {val}
     </div>
   );

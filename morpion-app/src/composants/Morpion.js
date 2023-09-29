@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useChannelStateContext, useChatContext } from "stream-chat-react";
 import Carre from "./Carre";
 import { Patterns } from "../PatternsGagnants";
-
-function Plateau({ resultat, setResultat }) {
-  const [plateau, setPlateau] = useState(["", "", "", "", "", "", "", "", ""]);
+function Morpion({ resultat, setResultat }) {
+  const [morpion, setPlateau] = useState(["", "", "", "", "", "", "", "", ""]);
   const [joueur, setJoueur] = useState("X");
   const [tour, setTour] = useState("X");
 
@@ -14,10 +13,10 @@ function Plateau({ resultat, setResultat }) {
   useEffect(() => {
     verifEgal();
     verifVictoire();
-  }, [plateau]);
+  }, [morpion]);
 
-  const choisirCarre = async (carre) => {
-    if (tour === joueur && plateau[carre] === "") {
+  const choixCarre = async (carre) => {
+    if (tour === joueur && morpion[carre] === "") {
       setTour(joueur === "X" ? "O" : "X");
 
       await canal.sendEvent({
@@ -26,7 +25,7 @@ function Plateau({ resultat, setResultat }) {
       });
 
       setPlateau(
-        plateau.map((val, idx) => {
+        morpion.map((val, idx) => {
           if (idx === carre && val === "") {
             return joueur;
           }
@@ -38,24 +37,24 @@ function Plateau({ resultat, setResultat }) {
 
   const verifVictoire = () => {
     Patterns.forEach((patternActu) => {
-      const premierJoueur = plateau[patternActu[0]];
+      const premierJoueur = morpion[patternActu[0]];
       if (premierJoueur === "") return;
       let patternGagnantTrouve = true;
       patternActu.forEach((idx) => {
-        if (plateau[idx] !== premierJoueur) {
+        if (morpion[idx] !== premierJoueur) {
           patternGagnantTrouve = false;
         }
       });
 
       if (patternGagnantTrouve) {
-        setResultat({ gagnant: plateau[patternActu[0]], etat: "gagne" });
+        setResultat({ gagnant: morpion[patternActu[0]], etat: "gagne" });
       }
     });
   };
 
   const verifEgal = () => {
     let rempli = true;
-    plateau.forEach((carre) => {
+    morpion.forEach((carre) => {
       if (carre === "") {
         rempli = false;
       }
@@ -72,7 +71,7 @@ function Plateau({ resultat, setResultat }) {
       setJoueur(joueurActu);
       setTour(joueurActu);
       setPlateau(
-        plateau.map((val, idx) => {
+        morpion.map((val, idx) => {
           if (idx === event.data.carre && val === "") {
             return event.data.joueur;
           }
@@ -83,26 +82,26 @@ function Plateau({ resultat, setResultat }) {
   });
 
   return (
-    <div className="plateau">
+    <div className="morpion">
       <div className="ligne">
-        <Carre val={plateau[0]} choisirCarre={() => choisirCarre(0)} />
-        <Carre val={plateau[1]} choisirCarre={() => choisirCarre(1)} />
-        <Carre val={plateau[2]} choisirCarre={() => choisirCarre(2)} />
+        <Carre val={morpion[0]} choisirCarre={() => choixCarre(0)} />
+        <Carre val={morpion[1]} choisirCarre={() => choixCarre(1)} />
+        <Carre val={morpion[2]} choisirCarre={() => choixCarre(2)} />
       </div>
       <div className="ligne">
-        <Carre val={plateau[3]} choisirCarre={() => choisirCarre(3)} />
-        <Carre val={plateau[4]} choisirCarre={() => choisirCarre(4)} />
-        <Carre val={plateau[5]} choisirCarre={() => choisirCarre(5)} />
+        <Carre val={morpion[3]} choisirCarre={() => choixCarre(3)} />
+        <Carre val={morpion[4]} choisirCarre={() => choixCarre(4)} />
+        <Carre val={morpion[5]} choisirCarre={() => choixCarre(5)} />
       </div>
       <div className="ligne">
-        <Carre val={plateau[6]} choisirCarre={() => choisirCarre(6)} />
-        <Carre val={plateau[7]} choisirCarre={() => choisirCarre(7)} />
-        <Carre val={plateau[8]} choisirCarre={() => choisirCarre(8)} />
+        <Carre val={morpion[6]} choisirCarre={() => choixCarre(6)} />
+        <Carre val={morpion[7]} choisirCarre={() => choixCarre(7)} />
+        <Carre val={morpion[8]} choisirCarre={() => choixCarre(8)} />
       </div>
     </div>
   );
 }
 
-export default Plateau;
+export default Morpion;
 
 /**Plateau du morpion */

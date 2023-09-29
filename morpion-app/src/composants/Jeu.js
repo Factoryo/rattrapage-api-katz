@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import Plateau from "./Plateau";
+import Plateau from "./Morpion";
 import { Window, MessageList, MessageInput } from "stream-chat-react";
-
 function Jeu({ canal, setCanal }) { 
-  const [joueursRejoints, setJoueursJoined] = useState(
+  const [joueursla, setJoueursJoined] = useState(
     canal.state.watcher_count === 2
   );
   const [resultat, setResultat] = useState({ gagnant: "none", etat: "none" });
@@ -11,7 +10,7 @@ function Jeu({ canal, setCanal }) {
   canal.on("user.watching.start", (event) => {
     setJoueursJoined(event.watcher_count === 2);
   });
-  if (!joueursRejoints) {
+  if (!joueursla) {
     return <div> En attente de l'autre joueur...</div>;
   }
   return (
