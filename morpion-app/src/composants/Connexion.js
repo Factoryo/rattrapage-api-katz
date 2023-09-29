@@ -3,19 +3,19 @@ import Axios from "axios";
 import Cookies from "universal-cookie";
 
 function Connexion({ setEstAuthentifie }) {
-  const [nomUtilisateur, setNomUtilisateur] = useState("");
+  const [pseudo, setPseudo] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
 
   const cookies = new Cookies();
   const seConnecter = () => {
     Axios.post("http://localhost:3001/login", {
-      nomUtilisateur,
+      pseudo,
       motDePasse,
     }).then((res) => {
-      const { prenom, nom, nomUtilisateur, jeton, userId } = res.data;
+      const { prenom, nom, pseudo, jeton, userId } = res.data;
       cookies.set("jeton", jeton);
       cookies.set("userId", userId);
-      cookies.set("nomUtilisateur", nomUtilisateur);
+      cookies.set("pseudo", pseudo);
       cookies.set("prenom", prenom);
       cookies.set("nom", nom);
       setEstAuthentifie(true);
@@ -26,9 +26,9 @@ function Connexion({ setEstAuthentifie }) {
       <label> Connexion</label>
 
       <input
-        placeholder="Nom d'utilisateur"
+        placeholder="Pseudo"
         onChange={(event) => {
-          setNomUtilisateur(event.target.value);
+          setPseudo(event.target.value);
         }}
       />
       <input

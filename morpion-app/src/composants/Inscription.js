@@ -4,15 +4,15 @@ import Cookies from "universal-cookie";
 
 function Inscription({ setEstAuthentifie }) {
   const cookies = new Cookies();
-  const [utilisateur, setUtilisateur] = useState(null);
+  const [user, setUser] = useState(null);
 
   const sInscrire = () => {
-    Axios.post("http://localhost:3001/inscription", utilisateur).then((res) => {
-      const { jeton, userId, prenom, nom, nomUtilisateur, motDePasseHash } =
+    Axios.post("http://localhost:3001/inscription", user).then((res) => {
+      const { jeton, userId, prenom, nom, pseudo, motDePasseHash } =
         res.data;
       cookies.set("jeton", jeton);
       cookies.set("userId", userId);
-      cookies.set("nomUtilisateur", nomUtilisateur);
+      cookies.set("pseudo", pseudo);
       cookies.set("prenom", prenom);
       cookies.set("nom", nom);
       cookies.set("motDePasseHash", motDePasseHash);
@@ -25,26 +25,26 @@ function Inscription({ setEstAuthentifie }) {
       <input
         placeholder="Prénom"
         onChange={(event) => {
-          setUtilisateur({ ...utilisateur, prenom: event.target.value });
+          setUser({ ...user, prenom: event.target.value });
         }}
       />
       <input
         placeholder="Nom"
         onChange={(event) => {
-          setUtilisateur({ ...utilisateur, nom: event.target.value });
+          setUser({ ...user, nom: event.target.value });
         }}
       />
       <input
         placeholder="Nom d'utilisateur"
         onChange={(event) => {
-          setUtilisateur({ ...utilisateur, nomUtilisateur: event.target.value });
+          setUser({ ...user, nomUtilisateur: event.target.value });
         }}
       />
       <input
         placeholder="Mot de passe"
         type="password"
         onChange={(event) => {
-          setUtilisateur({ ...utilisateur, motDePasse: event.target.value });
+          setUser({ ...user, motDePasse: event.target.value });
         }}
       />
       <button onClick={sInscrire}> S'inscrire</button>

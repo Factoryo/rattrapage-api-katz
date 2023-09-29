@@ -3,13 +3,13 @@ import Plateau from "./Plateau";
 import { Window, MessageList, MessageInput } from "stream-chat-react";
 
 function Jeu({ canal, setCanal }) { 
-  const [joueursRejoints, setJoueursRejoints] = useState(
+  const [joueursRejoints, setJoueursJoined] = useState(
     canal.state.watcher_count === 2
   );
   const [resultat, setResultat] = useState({ gagnant: "none", etat: "none" });
 
   canal.on("user.watching.start", (event) => {
-    setJoueursRejoints(event.watcher_count === 2);
+    setJoueursJoined(event.watcher_count === 2);
   });
   if (!joueursRejoints) {
     return <div> En attente de l'autre joueur...</div>;
