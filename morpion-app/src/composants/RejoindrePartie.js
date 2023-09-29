@@ -46,3 +46,5 @@ function RejoindreJeu() {
 }
 
 export default RejoindreJeu;
+
+/**Rejoindre la partie en cours */

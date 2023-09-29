@@ -9,3 +9,5 @@ function Carre({ choisirCarre, val }) {
 }
 
 export default Carre;
+
+/**Pions du morpion */

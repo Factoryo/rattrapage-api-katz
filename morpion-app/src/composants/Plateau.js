@@ -104,3 +104,5 @@ function Plateau({ resultat, setResultat }) {
 }
 
 export default Plateau;
+
+/**Plateau du morpion */

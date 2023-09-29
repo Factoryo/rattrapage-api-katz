@@ -53,3 +53,5 @@ app.post("/connexion", async (req, res) => {
 app.listen(3001, () => {
   console.log("Le serveur est en marche sur le port 3001");
 });
+
+/**Partie backend */

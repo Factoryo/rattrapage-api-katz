@@ -53,3 +53,5 @@ function Inscription({ setEstAuthentifie }) {
 }
 
 export default Inscription;
+
+/**Inscription */

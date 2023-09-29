@@ -1,10 +1,10 @@
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import Connexion from "./composants/Connexion";
 import Inscription from "./composants/Inscription";
 import { StreamChat } from "stream-chat";
 import { Chat } from "stream-chat-react";
 import Cookies from "universal-cookie";
-import { useState } from "react";
 import RejoindrePartie from "./composants/RejoindrePartie";
 
 function App() {
@@ -26,22 +26,24 @@ function App() {
     setEstAuthentifie(false);
   };
 
-  if (jeton) {
-    client
-      .connectUser(
-        {
-          id: cookies.get("userId"),
-          name: cookies.get("nomUtilisateur"),
-          firstName: cookies.get("prenom"),
-          lastName: cookies.get("nom"),
-          hashedPassword: cookies.get("motDePasseHash"),
-        },
-        jeton
-      )
-      .then((utilisateur) => {
-        setEstAuthentifie(true);
-      });
-  }
+  useEffect(() => {
+    if (jeton) {
+      client
+        .connectUser(
+          {
+            id: cookies.get("userId"),
+            name: cookies.get("nomUtilisateur"),
+            firstName: cookies.get("prenom"),
+            lastName: cookies.get("nom"),
+            hashedPassword: cookies.get("motDePasseHash"),
+          },
+          jeton
+        )
+        .then((utilisateur) => {
+          setEstAuthentifie(true);
+        });
+    }
+  }, [jeton, client, cookies]);
 
   return (
     <div className="App">

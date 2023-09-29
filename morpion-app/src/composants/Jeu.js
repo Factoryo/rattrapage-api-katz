@@ -42,3 +42,5 @@ function Jeu({ canal, setCanal }) {
 }
 
 export default Jeu;
+
+/**Statut du jeu */
