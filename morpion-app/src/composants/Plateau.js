@@ -37,18 +37,18 @@ function Plateau({ resultat, setResultat }) {
   };
 
   const verifierVictoire = () => {
-    Patterns.forEach((motifActuel) => {
-      const premierJoueur = plateau[motifActuel[0]];
+    Patterns.forEach((motifActu) => {
+      const premierJoueur = plateau[motifActu[0]];
       if (premierJoueur === "") return;
       let motifGagnantTrouve = true;
-      motifActuel.forEach((idx) => {
+      motifActu.forEach((idx) => {
         if (plateau[idx] !== premierJoueur) {
           motifGagnantTrouve = false;
         }
       });
 
       if (motifGagnantTrouve) {
-        setResultat({ gagnant: plateau[motifActuel[0]], etat: "gagne" });
+        setResultat({ gagnant: plateau[motifActu[0]], etat: "gagne" });
       }
     });
   };
