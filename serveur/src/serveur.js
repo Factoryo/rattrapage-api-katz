@@ -1,54 +1,55 @@
 import express from "express";
 import cors from "cors";
-import { v4 as uuidv4 } from "uuid";
 import { StreamChat } from "stream-chat";
-
+import { v4 as uuidv4 } from "uuid";
+import bcrypt from "bcrypt";
 const app = express();
 
 app.use(cors());
 app.use(express.json());
-const api_key = "bkhgt5xrfare";
-const api_secret = "4fdh69h5py6urjhutm6ruyuq3mxp3cs8bkkhjvnntq3rfa9wnch22vmme5fqe24v";
-const serveurClient = StreamChat.getInstance(api_key, api_secret);
+const cle_api = "mrp9h9wk79gy";
+const secret_api =
+  "nyefy4p8dzjpem43drjwxepr57ws3duysb7p5wybh5z63nk427bgb9t9zrfd7g26";
+const clientServeur = StreamChat.getInstance(cle_api, secret_api);
 
 app.post("/inscription", async (req, res) => {
-    try {
-      const { prenom, nom, pseudo, motdepasse } = req.body;
-      const userId = uuidv4();
-      const MotdePassecoupe = await bcrypt.hash(motdepasse, 10);
-      const token = serveurClient.createToken(userId);
-      res.json({ token, userId, prenom, nom, pseudo, MotdePassecoupe });
-    } catch (error) {
-      res.json(error);
-    }
-  });
+  try {
+    const { prenom, nom, nomUtilisateur, motDePasse } = req.body;
+    const userId = uuidv4();
+    const motDePasseHash = await bcrypt.hash(motDePasse, 10);
+    const jeton = clientServeur.createToken(userId);
+    res.json({ jeton, userId, prenom, nom, nomUtilisateur, motDePasseHash });
+  } catch (erreur) {
+    res.json(erreur);
+  }
+});
 
-  app.post("/connexion", async (req, res) => {
-    try {
-      const { pseudo, motdepasse } = req.body;
-      const { users } = await serveurClient.queryUsers({ nom: pseudo });
-      if (users.length === 0) return res.json({ message: "Utilisateur introuvable" });
-  
-      const token = serveurClient.createToken(users[0].id);
-      const motdepasseMatch = await bcrypt.compare(
-        motdepasse,
-        users[0].MotdePassecoupe
-      );
-  
-      if (motdepasseMatch) {
-        res.json({
-          token,
-          prenom: users[0].prenom,
-          nom: users[0].nom,
-          pseudo,
-          userId: users[0].id,
-        });
-      }
-    } catch (error) {
-      res.json(error);
+app.post("/connexion", async (req, res) => {
+  try {
+    const { nomUtilisateur, motDePasse } = req.body;
+    const { utilisateurs } = await clientServeur.queryUsers({ name: nomUtilisateur });
+    if (utilisateurs.length === 0) return res.json({ message: "Utilisateur non trouvé" });
+
+    const jeton = clientServeur.createToken(utilisateurs[0].id);
+    const correspondanceMotDePasse = await bcrypt.compare(
+      motDePasse,
+      utilisateurs[0].motDePasseHash
+    );
+
+    if (correspondanceMotDePasse) {
+      res.json({
+        jeton,
+        prenom: utilisateurs[0].prenom,
+        nom: utilisateurs[0].nom,
+        nomUtilisateur,
+        userId: utilisateurs[0].id,
+      });
     }
-  });
+  } catch (erreur) {
+    res.json(erreur);
+  }
+});
 
 app.listen(3001, () => {
-    console.log("Serveur est sur le port 3001");
-  });
+  console.log("Le serveur est en marche sur le port 3001");
+});
