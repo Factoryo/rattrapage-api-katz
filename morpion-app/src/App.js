@@ -5,7 +5,7 @@ import { StreamChat } from "stream-chat";
 import { Chat } from "stream-chat-react";
 import Cookies from "universal-cookie";
 import { useState } from "react";
-import RejoindrePartie from "./components/RejoindrePartie";
+import RejoindrePartie from "./composants/RejoindrePartie";
 
 function App() {
   const cle_api = "mrp9h9wk79gy";
